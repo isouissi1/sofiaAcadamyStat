@@ -1,0 +1,277 @@
+{% extends "base.html.twig" %}
+{% block body %}
+    <title>Acceuil </title>
+    <!-- page content -->
+    <div class="row" role="main">
+        <!-- top tiles -->
+        <div class="row tile_count">
+            <div class="col-md-2 col-md-offset-1 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Total des utilisateurs</span>
+                <div class="count">{% for count in counts %}
+                        {{ count['totaluser'] }}
+                    {% endfor %}</div>
+                <span class="count_bottom"><i class="green"></i></span>
+            </div>
+            <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-book"></i> Totale des cours</span>
+                <div class="count green">{% for course in courses %}
+                        {{ course['totalcourse'] }}
+                    {% endfor %}</div>
+                <span class="count_bottom"><i class="green"> </i> </span>
+            </div>
+            <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-book"></i> Totale des categories</span>
+                <div class="count green">{% for category in categorys %}
+                        {{ category['totalcategory'] }}
+                    {% endfor %}</div>
+                <span class="count_bottom"><i class="green"> </i></span>
+            </div>
+            <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Total des enseignants</span>
+                <div class="count">{% for counteach in counteachs %}
+                        {{ counteach['counteach'] }}
+                    {% endfor %}</div>
+                <span class="count_bottom"><i class="green"> </i></span>
+            </div>
+            <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Total des etudiants</span>
+                <div class="count">{% for countstud in countstuds %}
+                        {{ countstud['countstud'] }}
+                    {% endfor %}</div>
+                <span class="count_bottom"><i class="green"> </i></span>
+            </div>
+        </div>
+        <!-- /top tiles -->
+        <div class="row">
+            <div class="col-md-8 col-sm-8 col-xs-8">
+                <div class="dashboard_graph">
+                    <div class="row x_title">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h2>Les cours les plus recommandés</h2>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">
+                                    <canvas id="mybarCourse"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-sm-4 col-xs-4">
+                    <div class="x_panel tile fixed_height_400 overflow_hidden">
+                        <div class="dashboard_graph">
+                            <div class="x_title">
+                                <h2>Les catégories les plus recommandés</h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <table class="" style="width:100%">
+                                    <tr>
+                                        <td>
+                                            <canvas class="canvasDoughnut1" height="140" width="140"
+                                                    style="margin: 15px 10px 10px 10px"></canvas>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>Localisation des utilisateurs
+                            </h2>
+
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <div class="dashboard-widget-content">
+                                <div class="col-md-3 hidden-small">
+                                    <h2 class="line_30">{% for count in counts %}
+                                            {{ count['totaluser'] }}
+                                        {% endfor %} Users from
+                                        {% for countrie in countries %}
+                                            {{ countrie['count'] }}
+                                        {% endfor %}countries</h2>
+                                    <table class="countries_list">
+                                        <tbody>
+                                        <tr>
+                                            {% for uscountry in uscountrys %}
+                                            <td>{{ uscountry['country'] }}</td>
+                                            <td class="fs15 fw700 text-right">{{ uscountry['countt'] }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div id="world-map-gdp" class="col-md-9 col-sm-12 col-xs-12"
+                                     style="height:230px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+    <!-- /page content -->
+
+    {% block javascripts %}
+        <script type="text/javascript">            // Bar chart
+            var courses = [];
+            var counts = [];
+            $.ajax({
+                type: 'get',
+                url: '/coursebar',
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                    $.each(data, function (i, field) {
+                        courses.push(field['shortname']);
+                        counts.push(field['countUser']);
+                    });
+                }
+            });
+            $.getJSON("/coursebar", function (result) {
+                $.each(result, function (i, field) {
+                    courses.push(field['shortname']);
+                    counts.push(field['countUser']);
+                });
+            });
+            var ctx = document.getElementById("mybarCourse");
+            var mybarChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: courses,
+                    datasets: [{
+                        label: 'Etudiants inscrits',
+                        backgroundColor: "#26B99A",
+                        data: counts,
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    },
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            });
+        </script>
+    {% endblock %}
+
+    {% block jvmapjs %}
+        <script>
+            var dataMap;
+            $.ajax({
+                type: 'get',
+                url: '/countcountry',
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                    dataMap = data;
+                }
+            });
+            jQuery('#world-map-gdp').vectorMap({
+                map: 'world_en',
+                backgroundColor: '#ffffff',
+                color: '#333333',
+                hoverOpacity: 0.7,
+                selectedColor: '#666666',
+                showTooltip: true,
+                scaleColors: ['#C8EEFF', '#006491'],
+                normalizeFunction: 'polynomial',
+                values: dataMap
+            });
+        </script>
+
+        <div id="world-map-gdp" style="width: 700px; height: 600px;"></div>
+    {% endblock %}
+    {% block doghnut %}
+        <script>
+            var names = [];
+            var numbercourses = [];
+            var percentages = [];
+            $.ajax({
+                type: 'get',
+                url: '/coursecat',
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                    $.each(data, function (i, field) {
+                        names.push(field['name']);
+                        numbercourses.push(field['numbercourse']);
+                        percentages.push(field['pourcentage']);
+                    });
+                }
+            });
+            $.getJSON("/coursecat", function (result) {
+                $.each(result, function (i, field) {
+                    names.push(field['name']);
+                    numbercourses.push(field['numbercourse']);
+                    percentages.push(field['pourcentage']);
+                });
+            });
+            var data = names;
+            var number = numbercourses;
+            var percentage = percentages;
+            if ($('.canvasDoughnut1').length) {
+
+                var chart_doughnut_settings = {
+                    type: 'doughnut',
+                    tooltipFillColor: "rgba(51, 51, 51, 0.55)",
+                    data: {
+                        labels: data,
+                        datasets: [{
+                            data: percentage,
+                            backgroundColor: [
+                                "#BDC3C7",
+                                "#9B59B6",
+                                "#E74C3C",
+                                "#26B99A",
+                                "#3498DB"
+                            ],
+                            hoverBackgroundColor: [
+                                "#CFD4D8",
+                                "#B370CF",
+                                "#E95E4F",
+                                "#36CAAB",
+                                "#49A9EA"
+                            ]
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            position: 'bottom',
+
+                        }
+                    }
+                }
+                $('.canvasDoughnut1').each(function () {
+
+                    var chart_element = $(this);
+                    var chart_doughnut = new Chart(chart_element, chart_doughnut_settings);
+                });
+            }
+        </script>
+    {% endblock %}
+{% endblock %}

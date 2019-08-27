@@ -1,0 +1,44 @@
+</table>
+<table class="table">
+    {% for detail in details %}
+        <tr>
+            <th>Id Cours</th>
+            <td>{{ detail['id'] }}</td>
+        </tr>
+        <tr>
+            <th>Utilisateurs inscrits</th>
+            <td>{{ detail['countUser'] }}</td>
+        </tr>
+        <tr>
+            <th>Categorie</th>
+            <td>{{ detail['name'] }}</td>
+        </tr>
+        <tr>
+            <th>Nom</th>
+            <td>{{ detail['fullname'] }}</td>
+        </tr>
+        <tr>
+            <th>Nom abrégé</th>
+            <td>{{ detail['shortname'] }}</td>
+        </tr>
+        <tr>
+            <th>Date de début </th>
+            <td>{{ detail['startdate'] }}</td>
+        </tr>
+        <tr>
+            <th>Date de fin </th>
+            <td>{{ detail['enddate'] }}</td>
+        </tr>
+        <tr>
+            <th>Enseignant</th>
+            {% for teach in teachs %}
+                <td>{{ teach['techfirstname'] }}
+                    {{ teach['techlastname'] }}</td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <th>Description </th>
+            <td>{{ detail['summary'] }}</td>
+        </tr>
+    {% endfor %}
+</table>

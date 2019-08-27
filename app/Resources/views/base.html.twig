@@ -1,0 +1,87 @@
+<!-- jQuery -->
+<script src="{{ asset ('assets/gentelella/vendors/jquery/dist/jquery.min.js') }}"></script>
+<!-- Bootstrap -->
+<link href="{{ asset ('assets/gentelella/vendors/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">
+<!-- Font Awesome -->
+<link href="{{ asset ('assets/gentelella/vendors/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+<!-- iCheck -->
+<link href="{{ asset ('assets/gentelella/vendors/iCheck/skins/flat/green.css') }}" rel="stylesheet">
+<!-- JQVMap -->
+<link href="{{ asset ('assets/gentelella/vendors/jqvmap/dist/jqvmap.min.css') }}" rel="stylesheet"/>
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <a href="{{ url( 'homepage') }}" class="site_title"><i class="fa fa-bar-chart"></i> <span>SophiaAcademy Stat</span></a>
+                </div>
+                <div class="clearfix"></div>
+                <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                    <div class="menu_section">
+                        <h3>General</h3>
+                        <ul class="nav side-menu">
+                            <li><a href="{{ url( 'homepage') }}"><i class="fa fa-home"></i> Acceuil <span
+                                            class="fa fa-home"></span></a>
+                            </li>
+                            <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{{ url( 'users') }}">Tableau d'utilisateurs</a></li>
+                                    <li><a href="{{ url( 'courses') }}">Tableau des cours</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="sidebar-footer hidden-small">
+                    <a data-toggle="tooltip" data-placement="top" title="Settings">
+                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                    </a>
+                    <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                    </a>
+                    <a data-toggle="tooltip" data-placement="top" title="Lock">
+                        <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                    </a>
+                    <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- top navigation -->
+        <div class="top_nav">
+            <div class="nav_menu">
+                <nav>
+                    <div class="nav toggle">
+                        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                    </div>
+                    <ul class="nav navbar-nav navbar-right">
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <div class="right_col" role="main">
+            <!-- jQuery -->
+            <script src="{{ asset ('assets/gentelella/vendors/jquery/dist/jquery.min.js') }}"></script>
+            <!-- Bootstrap -->
+            <script src="{{ asset ('assets/gentelella/vendors/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+            <!-- Chart.js -->
+            <script src="{{ asset ('assets/gentelella/vendors/Chart.js/dist/Chart.min.js') }}"></script>
+            <!-- JQVMap -->
+            <script src="{{ asset ('assets/gentelella/vendors/jqvmap/dist/jquery.vmap.js') }}"></script>
+            <script src="{{ asset ('assets/gentelella/vendors/jqvmap/dist/maps/jquery.vmap.world.js') }}"></script>
+            <script src="{{ asset ('assets/gentelella/vendors/jqvmap/examples/js/jquery.vmap.sampledata.js') }}"></script>
+            <!-- Custom Theme Scripts -->
+            <script src="{{ asset ('assets/gentelella/build/js/custom.min.js') }}"></script>
+            <link href="{{ asset ('assets/gentelella/build/css/custom.min.css') }}" rel="stylesheet">
+            <!-- Font Awesome -->
+            <link href="{{ asset ('assets/gentelella/vendors/font-awesome/css/font-awesome.min.css') }}"
+                  rel="stylesheet">
+            {% block body %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+

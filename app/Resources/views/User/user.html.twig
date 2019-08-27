@@ -1,0 +1,98 @@
+{% extends "base.html.twig" %}
+    {% block body %}
+        <title>Tableau des utilisateurs</title>
+        <link rel="stylesheet" type="text/css" href="assets/datatable/css/dataTables.bootstrap.min.css"/>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Tableau des utilisateurs</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <table class="table" id="myTable1">
+                            <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>Pseudo</th>
+                                <th>Prénom</th>
+                                <th>Nom</th>
+                                <th>Pays</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for user in users %}
+                                <tr>
+                                    <td>{{ user['id'] }}</td>
+                                    <td>{{ user['username'] }}</td>
+                                    <td>{{ user['firstname'] }}</td>
+                                    <td>{{ user['lastname'] }}</td>
+                                    <td>{{ user['country'] }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary" id="myModal" onclick="getDetailUser({{ user['id'] }})" data-toggle="modal"
+                                                data-target=".bs-example-modal-lg ">
+                                            profile
+                                        </button>
+                                    </td>
+
+                            {% endfor %}
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="showmodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <p></p>
+                    <div class="modal-header">
+                        <h2>Profile d'utilisateur</h2>
+                        <button type="button" class="close" data-dismiss="modal"><span
+                                    aria-hidden="true">x</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel"></h4>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        {% block datatables %}
+            <script type="text/javascript" src="assets/datatable/js/jquery.dataTables.min.js"></script>
+            <script type="text/javascript" src="assets/datatable/js/dataTables.bootstrap.min.js"></script>
+            <script>
+                $(document).ready(function() {
+                    $('#myTable1').dataTable({
+                        "language": {
+                            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+                        },
+                        "aoColumnDefs" : [ {
+                            'bSortable' : false,
+                            'aTargets' : [ 5 ]
+                        } ]
+                    });
+                });
+            </script>
+        {% endblock %}
+        {% block javascripts %}
+            <script type="text/javascript">
+                function getDetailUser(id){
+                    $.ajax({
+                        type: 'get',
+                        url: '/user/'+id,
+                        success:function(data) {
+                            $('.modal-body').html(data);
+                            $('#showmodal').modal("show");
+                        }
+                    });
+                }
+            </script>
+        {% endblock %}
+    {% endblock %}

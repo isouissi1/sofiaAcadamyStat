@@ -1,0 +1,188 @@
+<!-- Bootstrap -->
+<link href="{{ asset ('assets/gentelella/vendors/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">
+<!-- Font Awesome -->
+<link href="{{ asset ('assets/gentelella/vendors/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+<!-- NProgress -->
+<link href="{{ asset ('assets/gentelella/vendors/nprogress/nprogress.css') }}" rel="stylesheet">
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_content">
+                <div class="col-md-3 col-sm-3 col-xs-12 profile_left">
+                    <div class="profile_img">
+                        <div id="crop-avatar">
+                            <!-- Current avatar -->
+                            {% for detuser in detusers %}
+                            <img class="img-responsive avatar-view"
+                                 src="http://localhost/moodle/pluginfile.php/{{ detuser['contextid'] }}/user/icon/academi" alt="Avatar"
+                                 title="Change the avatar">
+                        </div>
+                    </div>
+                    <h3>
+                        {{ detuser['firstname'] }} {{ detuser['lastname'] }}
+                    </h3>
+                    <ul class="list-unstyled user_data">
+                        <li><i class="fa fa-map-marker user-profile-icon"></i> {{ detuser['city'] }}
+                            ,{{ detuser['country'] }}
+                        </li>
+                        <li>
+                            <i class="fa fa-briefcase user-profile-icon"></i> {{ detuser['role'] }}
+                        </li>
+                        <li class="m-top-xs">
+                            <i class="fa fa-external-link user-profile-icon"></i>
+                            <a href="http://www.kimlabs.com/profile/" target="_blank">{{ detuser['email'] }}</a>
+                        </li>
+                    </ul>
+                    <script>
+                        var id ={{ detuser['id'] }};
+                        var matieres = [];
+                        var notes = [];
+                        var datas = [];
+                        var idcourses = [];
+                        $.ajax({
+                            type: 'get',
+                            url: '/grade/' + id,
+                            dataType: 'json',
+                            async: false,
+                            success: function (data) {
+                                $.each(data, function (i, field) {
+                                    idcourses.push(field['Courseid']);
+                                    matieres.push(field['Matiere']);
+                                    notes.push(field['NOTE']);
+                                    //maxnotes.push(field['maxnote']);
+                                    //minotes.push(field['minnote']);
+                                });
+                            }
+                        });
+                        var maxnotes = [];
+                        var minotes = [];
+                        $.ajax({
+                            type: 'get',
+                            url: '/maxmin',
+                            dataType: 'json',
+                            async: false,
+                            success: function (data1) {
+                                $.each(data1, function (i, field) {
+                                    maxnotes.push(field['maxnote']);
+                                    minotes.push(field['minnote']);
+                            });
+
+                              }
+                         });
+                        var ctx = document.getElementById("mybarrChart");
+                        var mybarChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: matieres,
+                                datasets: [{
+                                    label: 'Max',
+                                    backgroundColor: "rgba(151,187,205,0.5)",
+                                    data: maxnotes,
+                                },{
+                                    label: 'Notes',
+                                    backgroundColor: "#26B99A",
+                                    data: notes,
+                                }, {
+                                    label: 'Min',
+                                    backgroundColor: "rgba(250,187,205,0.5)",
+                                    data: minotes,
+                                }]
+                            },
+                            options: {
+                                title: {
+                                    display: true,
+                                    text: 'Barres des notes',
+                                    fontSize: 25
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            min: 0,
+                                            max: 100
+
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    </script>
+                    {% endfor %}
+                </div>
+                <div class="col-md-9 col-sm-9 col-xs-12">
+                </div>
+                <!-- start of user-activity-graph -->
+                <div id="graph_bar" style="width:100%; height:280px;"></div>
+                <!-- end of user-activity-graph -->
+                <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                    <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                        <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab"
+                                                            data-toggle="tab" aria-expanded="false">Cours</a>
+                        </li>
+                        <li role="presentation" class="active" ><a href="#tab_content3" role="tab" id="profile-tab2"
+                                                            data-toggle="tab" aria-expanded="false">Barres des notes</a>
+                        </li>
+                    </ul>
+                    <div id="myTabContent" class="tab-content">
+                        <div role="tabpanel" class="tab-pane fade active in" id="tab_content1"
+                             aria-labelledby="home-tab">
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
+                            <!-- start user projects -->
+                            <table class="data table table-striped no-margin">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nom</th>
+                                    <th>Categorie</th>
+                                    <th>Dernier Accés</th>
+                                </tr>
+                                </thead>
+                                {% for usecourse in usecourses %}
+                                    <tbody>
+                                    <tr>
+                                        <td>{{ usecourse['id'] }}</td>
+                                        <td>{{ usecourse['shortname'] }}</td>
+                                        <td>{{ usecourse['name'] }}</td>
+                                        <td>{{ usecourse['timeacces']}}</td>
+                                    </tr>
+                                    </tbody>
+                                {% endfor %}
+                            </table>
+                            <!-- end user projects -->
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab">
+                            <p>
+                            <div class="x_content">
+                                <canvas id="mybarrChart"></canvas>
+                            </div>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="{{ asset ('assets/gentelella/vendors/jquery/dist/jquery.min.js') }}"></script>
+<!-- Bootstrap -->
+<script src="{{ asset ('assets/gentelella/vendors/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+<!-- FastClick -->
+<script src="{{ asset ('assets/gentelella/vendors/fastclick/lib/fastclick.js') }}"></script>
+<!-- NProgress -->
+<script src="{{ asset ('assets/gentelella/vendors/nprogress/nprogress.js') }}"></script>
+<!-- morris.js -->
+<script src="{{ asset ('assets/gentelella/vendors/raphael/raphael.min.js') }}"></script>
+<script src="{{ asset ('assets/gentelella/vendors/morris.js/morris.min.js') }}"></script>
+<!-- bootstrap-progressbar -->
+<script src="{{ asset ('assets/gentelella/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js') }}"></script>
+<!-- bootstrap-daterangepicker -->
+<script src="{{ asset ('assets/gentelella/vendors/moment/min/moment.min.js') }}"></script>
+<script src="{{ asset ('assets/gentelella/vendors/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
+
+<!-- Custom Theme Scripts -->
+<link href="{{ asset ('assets/gentelella/build/css/custom.min.css') }}" rel="stylesheet">
+
+
